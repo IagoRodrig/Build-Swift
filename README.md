@@ -9,9 +9,8 @@ Automacao local para build e copia de componentes do projeto Compras Digitais.
 - Mostra um resumo com status de cada etapa
 
 ## Como executar
-1. Abra um terminal com permissao de administrador
-2. Execute `run.ps.bat`
-3. Responda `s` ou `n` para cada etapa
+1. Na pasta, execute o `arquivo run.ps.bat`
+2. Responda as perguntas com s/n
 
 O `run.ps.bat` garante a elevacao e chama o `script.ps1` com `ExecutionPolicy Bypass`.
 
