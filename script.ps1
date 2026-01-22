@@ -49,9 +49,24 @@ function Erro { param ([string]$Texto); Write-Host " [ERRO] $Texto" -ForegroundC
 do {
     $Relatorio = @()
     $Paginas = @(
-        @{ Nome = "Copia: Cotacao";     Src = "$BaseDir\PAGINA-PUBLICA-COTACAO\wcm\widget\XP_CDIG_WGT_COTACAO_FORNECEDOR\src"; Dest = "$Instalador\XP_CDIG_WGT_COTACAO_FORNECEDOR\src"; Executar = $false },
-        @{ Nome = "Copia: Aceite";      Src = "$BaseDir\PAGINA-PUBLICA-ACEITE-PEDIDO\wcm\widget\XP_CDIG_WGT_ACEITE_PEDIDO\src";  Dest = "$Instalador\XP_CDIG_WGT_ACEITE_PEDIDO\src";  Executar = $false },
-        @{ Nome = "Copia: Nota Fiscal"; Src = "$BaseDir\PAGINA-PUBLICA-NOTA-FISCAL\wcm\widget\XP_CDIG_WGT_RECEBIMENTO_NF\src";   Dest = "$Instalador\XP_CDIG_WGT_RECEBIMENTO_NF\src";   Executar = $false }
+        @{ 
+            Nome = "Copia: Cotacao";     
+            Src = "$BaseDir\PAGINA-PUBLICA-COTACAO\wcm\widget\XP_CDIG_WGT_COTACAO_FORNECEDOR\src";  # Origem da copia da pagina publica
+            Dest = "$Instalador\XP_CDIG_WGT_COTACAO_FORNECEDOR\src";  # Destino da copia da pagina publica
+            Executar = $false 
+        },
+        @{ 
+            Nome = "Copia: Aceite";      
+            Src = "$BaseDir\PAGINA-PUBLICA-ACEITE-PEDIDO\wcm\widget\XP_CDIG_WGT_ACEITE_PEDIDO\src";  # Origem da copia da pagina publica
+            Dest = "$Instalador\XP_CDIG_WGT_ACEITE_PEDIDO\src";  # Destino da copia da pagina publica
+            Executar = $false 
+        },
+        @{ 
+            Nome = "Copia: Nota Fiscal"; 
+            Src = "$BaseDir\PAGINA-PUBLICA-NOTA-FISCAL\wcm\widget\XP_CDIG_WGT_RECEBIMENTO_NF\src";   
+            Dest = "$Instalador\XP_CDIG_WGT_RECEBIMENTO_NF\src";   # Destino da copia da pagina publica
+            Executar = $false 
+        }
     )
 
     Show-Banner
