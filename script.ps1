@@ -5,10 +5,90 @@ $ErrorActionPreference = "Continue"
 # ============================================================
 # 1. CONFIGURACOES DE CAMINHOS
 # ============================================================
-$BaseDir      = "D:\FLUIG-LOCAL\COMPRAS-DIGITAL\FLUIG"
-$AppAngular   = "$BaseDir\APP-COMPRAS-DIGITAL"
-$Instalador   = "$BaseDir\INSTALADOR-COMPRAS-DIGITAL"
+$ScriptVersion = "1.1.0"
+$DefaultProductVersion = "1.1.0"
+$DefaultBaseDir = "D:\FLUIG-LOCAL\COMPRAS-DIGITAL\FLUIG"
+$DefaultAppAngular = "$DefaultBaseDir\APP-COMPRAS-DIGITAL"
+$DefaultInstalador = "$DefaultBaseDir\INSTALADOR-COMPRAS-DIGITAL"
 $DebugRobocopy = $true
+
+$DataDir = Join-Path $PSScriptRoot "data"
+$DataFile = Join-Path $DataDir "build-swift.data.json"
+$ModelFile = Join-Path $DataDir "build-swift.model.json"
+
+function Pergunta-Texto {
+    param (
+        [string]$Msg,
+        [string]$Default
+    )
+    $res = Read-Host "$Msg [$Default]"
+    if ([string]::IsNullOrWhiteSpace($res)) { return $Default }
+    return $res
+}
+
+function Ler-Config {
+    if (!(Test-Path $DataFile)) { return $null }
+    try {
+        return (Get-Content $DataFile -Raw | ConvertFrom-Json)
+    } catch {
+        return $null
+    }
+}
+
+function Ler-Model {
+    if (!(Test-Path $ModelFile)) { return $null }
+    try {
+        return (Get-Content $ModelFile -Raw | ConvertFrom-Json)
+    } catch {
+        return $null
+    }
+}
+
+function Config-Valida {
+    param ($Config)
+    return (
+        $null -ne $Config -and
+        -not [string]::IsNullOrWhiteSpace($Config.versaoProduto) -and
+        $null -ne $Config.caminhos -and
+        -not [string]::IsNullOrWhiteSpace($Config.caminhos.baseDir) -and
+        -not [string]::IsNullOrWhiteSpace($Config.caminhos.appAngular) -and
+        -not [string]::IsNullOrWhiteSpace($Config.caminhos.instalador)
+    )
+}
+
+function Salvar-Config {
+    param ($Config)
+    if (!(Test-Path $DataDir)) { New-Item -Path $DataDir -ItemType Directory -Force | Out-Null }
+    $Config | ConvertTo-Json -Depth 5 | Set-Content -Path $DataFile -Encoding UTF8
+}
+
+function Garantir-Config {
+    $configAtual = Ler-Config
+    if (!(Config-Valida $configAtual)) {
+        Write-Host "`n>>> CONFIGURACAO INICIAL" -ForegroundColor Yellow
+        $model = Ler-Model
+        $produtoVersao = if ($null -ne $model -and -not [string]::IsNullOrWhiteSpace($model.versaoProduto)) {
+            $model.versaoProduto
+        } else {
+            $DefaultProductVersion
+        }
+        $baseDir = Pergunta-Texto "Informe o caminho do BaseDir (Pasta onde está todos os projetos)" $DefaultBaseDir
+        $appAngular = Pergunta-Texto "Informe o caminho do AppAngular" "$baseDir\APP-COMPRAS-DIGITAL"
+        $instalador = Pergunta-Texto "Informe o caminho do Instalador" "$baseDir\INSTALADOR-COMPRAS-DIGITAL"
+
+        $configAtual = [PSCustomObject]@{
+            versaoProduto = $produtoVersao
+            caminhos = [PSCustomObject]@{
+                baseDir = $baseDir
+                appAngular = $appAngular
+                instalador = $instalador
+            }
+        }
+        Salvar-Config $configAtual
+        Write-Host " Configuracao salva em: $DataFile" -ForegroundColor Green
+    }
+    return $configAtual
+}
 
 # ============================================================
 # 2. FUNCOES DE INTERFACE
@@ -27,7 +107,7 @@ function Show-Banner {
 ============================================================
 "@
     Write-Host $banner -ForegroundColor Cyan
-    Write-Host " Versao: 1.1.0 | Build Swift" -ForegroundColor Cyan
+    Write-Host " Versao produto: $ProdutoVersao | Build Swift $ScriptVersion" -ForegroundColor Cyan
     Write-Host " Autor: Iago Rodrigues" -ForegroundColor Cyan
     Write-Host " Github: https://github.com/IagoRodrig" -ForegroundColor Cyan
     Write-Host ("-" * 60) -ForegroundColor Cyan
@@ -46,6 +126,12 @@ function Erro { param ([string]$Texto); Write-Host " [ERRO] $Texto" -ForegroundC
 # ============================================================
 # 3. LOOP PRINCIPAL
 # ============================================================
+$Config = Garantir-Config
+$ProdutoVersao = $Config.versaoProduto
+$BaseDir = $Config.caminhos.baseDir
+$AppAngular = $Config.caminhos.appAngular
+$Instalador = $Config.caminhos.instalador
+
 do {
     $Relatorio = @()
     $Paginas = @(

@@ -28,6 +28,21 @@ Definidos no topo do script:
 - `AppAngular`: `APP-COMPRAS-DIGITAL`
 - `Instalador`: `INSTALADOR-COMPRAS-DIGITAL`
 
+As pastas de origem/destino das copias sao montadas a partir do `BaseDir`.
+Ou seja, as pastas de paginas publicas e do instalador precisam estar dentro do `BaseDir`.
+Exemplo: `BaseDir` = `D:\FLUIG-LOCAL\COMPRAS-DIGITAL\FLUIG`
+
+## Configuracao via JSON
+Na primeira execucao, se nao existir o arquivo de dados, o script pergunta os caminhos e salva em:
+- `Build-Swift/data/build-swift.data.json`
+
+O modelo da estrutura esta em:
+- `Build-Swift/data/build-swift.model.json`
+
+O arquivo de dados eh ignorado pelo git para nao subir no GitHub.
+
+A versao do produto vem do model e nao eh digitada.
+
 ## Copias (Robocopy)
 Cada pagina copia a pasta `src` do widget correspondente para o instalador.
 
