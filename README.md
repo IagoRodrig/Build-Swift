@@ -4,6 +4,7 @@ Automacao local para build e copia de componentes do projeto Compras Digitais.
 
 ## O que faz
 - Opcionalmente executa a build do Angular em `APP-COMPRAS-DIGITAL`
+- Também executa opcionalmente o `npm install`
 - Copia (Robocopy) os widgets das paginas publicas para `INSTALADOR-COMPRAS-DIGITAL`
 - Opcionalmente executa `mvn clean install` no instalador
 - Mostra um resumo com status de cada etapa
