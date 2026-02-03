@@ -71,6 +71,9 @@ do {
 
     Show-Banner
     $rodarAngular = Pergunta "1. Deseja realizar a build do Angular?"
+    if($rodarAngular){
+        $rodarNpm = Pergunta "1.1. Deseja realizar o npm install?"
+    }
     for ($i = 0; $i -lt $Paginas.Count; $i++) {
         if (Pergunta "2.$($i+1). Deseja copiar a pagina: $($Paginas[$i].Nome)?") { $Paginas[$i].Executar = $true }
     }
@@ -83,6 +86,12 @@ do {
         Titulo "BUILD ANGULAR"
         if (Test-Path $AppAngular) {
             Set-Location $AppAngular
+            if ($rodarNpm) {
+                Write-Host "Executando npm install..."
+                npm install
+                Write-Host "---------------------------------"
+            }
+            Write-Host "Executando ng build..."
             ng build --deploy-url /XP_CDIG_WGT_APP/resources/js/compras-digital/
             $status = if ($LASTEXITCODE -eq 0) { "Sucesso" } else { "Erro" }
         } else { $status = "Caminho nao encontrado" }
